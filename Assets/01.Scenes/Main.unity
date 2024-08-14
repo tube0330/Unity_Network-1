@@ -122,6 +122,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &74243092 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4789895822770736, guid: 13259943c4d634186ac994d570bb3253, type: 3}
+  m_PrefabInstance: {fileID: 810473779}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &708139771
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -284,11 +289,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4126983702692336, guid: 13259943c4d634186ac994d570bb3253, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.04
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4126983702692336, guid: 13259943c4d634186ac994d570bb3253, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.123
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4126983702692336, guid: 13259943c4d634186ac994d570bb3253, type: 3}
       propertyPath: m_LocalRotation.w
@@ -596,6 +601,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 98cdee121d6e440de9fb99a7c24fa0da, type: 3}
   m_PrefabInstance: {fileID: 1511838803}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1156176776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148758087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f83db52281b7f0f438d2776807fbea51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gun: {fileID: 1251432072}
+  gunPivot: {fileID: 1971655769}
+  leftHandMound: {fileID: 1339716883}
+  rightHandMound: {fileID: 74243092}
 --- !u!1001 &1184395028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -701,6 +722,11 @@ MonoBehaviour:
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 198000012944515248, guid: 74d744994bc414c37bfda957f1d57118, type: 3}
   m_PrefabInstance: {fileID: 930660877}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1339716883 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4355249862128598, guid: 13259943c4d634186ac994d570bb3253, type: 3}
+  m_PrefabInstance: {fileID: 810473779}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1511838803
 PrefabInstance:
@@ -824,6 +850,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 98cdee121d6e440de9fb99a7c24fa0da, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1148792562}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 98cdee121d6e440de9fb99a7c24fa0da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1156176776}
   m_SourcePrefab: {fileID: 100100000, guid: 98cdee121d6e440de9fb99a7c24fa0da, type: 3}
 --- !u!1 &1761076141
 GameObject:
@@ -1059,7 +1088,7 @@ Transform:
   m_GameObject: {fileID: 1971655768}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

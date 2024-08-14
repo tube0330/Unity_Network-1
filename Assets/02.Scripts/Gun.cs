@@ -40,7 +40,7 @@ public class Gun : MonoBehaviour
         lastFireTime = 0f;
     }
 
-    void Fire() //발사 시도
+    public void Fire() //발사 시도
     {
         if (gunstate == State.READY && Time.time >= lastFireTime + timeBetweenShot)
         {
@@ -103,7 +103,7 @@ public class Gun : MonoBehaviour
         gunstate = State.RELOADING;
         source.PlayOneShot(reloadClip);
         yield return new WaitForSeconds(reloadTime);
-        
+
         int ammoToFill = magCapacity - curmagAmmo;  //탄창에 채울 탄알 계산
 
         if (remainAmmo < ammoToFill)    //탄창에 채워야 할 탄알이 남은 탄알보다 많다면 채워야 할 탄알수를 남은 탄알수에 맞추어서 줄임
