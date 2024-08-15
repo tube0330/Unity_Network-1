@@ -6,36 +6,37 @@ using UnityEngine;
 
 public class PlayerShooter : MonoBehaviour
 {
-    public Gun gun;
-    public Transform gunPivot;  //총 배치 기준점
-    public Transform leftHandMound; //총의 왼쪽 손잡이 위치
+    public Gun c_gun;
+    public Transform gunPivot;          //총 배치 기준점
+    public Transform leftHandMound;     //총의 왼쪽 손잡이 위치
     public Transform rightHandMound;    //총의 오른쪽 손잡이 위치
-    PlayerInput playerInput;
+
+    PlayerInput c_playerInput;
     Animator ani;
 
     readonly int hashReload = Animator.StringToHash("Reload");
 
     void OnEnable()
     {
-        gun.gameObject.SetActive(true); //이 스크립트가 활성화 될 때 gun 스크립트 gameobject도 함께 활성화
+        c_gun.gameObject.SetActive(true); //이 스크립트가 활성화 될 때 gun 스크립트 gameobject도 함께 활성화
     }
 
     void Start()
     {
         ani = GetComponent<Animator>();
-        playerInput = GetComponent<PlayerInput>();
+        c_playerInput = GetComponent<PlayerInput>();
     }
 
     void Update()
     {
-        if (playerInput.fire)
+        if (c_playerInput.fire)
         {
-            gun.Fire();
+            c_gun.Fire();
         }
 
-        else if (playerInput.reload)
+        else if (c_playerInput.reload)
         {
-            if (gun.Reload())
+            if (c_gun.Reload())
                 ani.SetTrigger(hashReload);
         }
 
@@ -49,7 +50,7 @@ public class PlayerShooter : MonoBehaviour
 
     void OnAnimatorIK(int layerIndex)
     {
-        gunPivot.position = ani.GetIKHintPosition(AvatarIKHint.RightElbow); //총이 기준점 gunpivot을 3D모델의 오른쪽 팔꿈치 위치로 이동
+        gunPivot.position = ani.GetIKHintPosition(AvatarIKHint.RightElbow); //gunpivot을 3D모델의 오른쪽 팔꿈치 위치로 이동
 
         /*IK 사용해 왼손의 위치와 회전을 총의 왼쪽 손잡이에 맞춤*/
         ani.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0f/*쓸거면 1.0*/);
@@ -65,6 +66,6 @@ public class PlayerShooter : MonoBehaviour
 
     void OnDisable()
     {
-        gun.gameObject.SetActive(false);
+        c_gun.gameObject.SetActive(false);
     }
 }

@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float rotateSpeed = 180f;
     PlayerInput c_playerInput;
     Rigidbody rb;
-    Animator aniPlayer;
+    Animator ani;
 
     readonly int hashMove = Animator.StringToHash("move");
 
@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     {
         c_playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
-        aniPlayer = GetComponent<Animator>();
+        ani = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -24,19 +24,19 @@ public class PlayerMovement : MonoBehaviour
         Rotate();
         Move();
 
-        aniPlayer.SetFloat(hashMove, c_playerInput.move);
+        ani.SetFloat(hashMove, c_playerInput.move);
     }
 
-     private void Move()
+    private void Move()
     {
-        Vector3 moveDist = moveSpeed * c_playerInput.move * Time.deltaTime * transform.forward;
-        Vector3 newPosition = rb.position + moveDist;
-        rb.MovePosition(newPosition);
+        Vector3 moveDist = moveSpeed * c_playerInput.move * Time.deltaTime * transform.forward; //이동거리 계산
+        Vector3 destination = rb.position + moveDist;   //현재 위치 + 이동 거리 => 캐릭터가 위치해야 할 좌표 계산
+        rb.MovePosition(destination);
     }
 
     void Rotate()
     {
         float turn = c_playerInput.rotate * rotateSpeed * Time.deltaTime;
-        rb.rotation = rb.rotation * Quaternion.Euler(0f, turn, 0f);
+        rb.rotation *= Quaternion.Euler(0f, turn, 0f);
     }
 }

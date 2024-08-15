@@ -8,7 +8,7 @@ public class Gun : MonoBehaviour
     public State gunstate { get; private set; }
 
     public Transform firePos;
-    public ParticleSystem muzzleFlash;  //총구 화염 효과
+    public ParticleSystem muzzleFlash;      //총구 화염 효과
     public ParticleSystem shellEjectEffect; //탄피 효과
     LineRenderer lineRenderer;
     AudioSource source;
@@ -16,11 +16,11 @@ public class Gun : MonoBehaviour
     AudioClip reloadClip;
 
     public float damage = 25f;
-    float fireDistance = 50f;       //사정거리
+    float fireRange = 50f;          //사정거리
     public int remainAmmo = 100;    //남은 탄약
-    public int magCapacity = 25;    //탄창 용량
-    public int curmagAmmo;          //현재 탄창에 남아 있는 탄알
-    public float timeBetweenShot = 0.1f;   //탄알 발사 간격
+    public int magCapacity = 25;    //탄창 용량 25
+    public int curMagAmmo;          //현재 탄창에 있는 탄약
+    public float timeBetweenShot = 0.1f;   //발사 쿨타임 0.1초
     public float reloadTime = 1.0f; //재장전 소요 시간
     float lastFireTime;             //총을 마지막으로 발사한 시점
 
@@ -35,7 +35,7 @@ public class Gun : MonoBehaviour
 
     void OnEnable()
     {
-        curmagAmmo = magCapacity;  //25
+        curMagAmmo = magCapacity;  //25
         gunstate = State.READY;
         lastFireTime = 0f;
     }
@@ -51,23 +51,22 @@ public class Gun : MonoBehaviour
 
     void Shot() //실제 발사 처리
     {
-        RaycastHit hit;
+        RaycastHit hit; //레이캐스트가 충돌한 정보를 담고 있는 구조체 선언
         //Ray ray = new Ray(firePos.position, firePos.forward);
         Vector3 hitPos = Vector3.zero;
-        if (Physics.Raycast(firePos.position, firePos.forward/*ray*/, out hit, fireDistance))
+        if (Physics.Raycast(firePos.position, firePos.forward/*ray*/, out hit, fireRange))
         {
-            IDamageable target = hit.collider.GetComponent<IDamageable>();  //충돌한 상대방으로부터 IDamageable 오브젝트 가져오기 시도
-            if (target != null)
-            {
-                target.OnDamage(damage, hit.point, hit.normal); //상대방의 OnDamage() 함수 호출해 상대방에게 Damage를 줌
-            }
+            IDamageable target = hit.collider.GetComponent<IDamageable>();  //Raycast가 충돌한 물체의 Collider에서 IDamageable 컴포넌트 찾음
+            
+            if (target != null) //충돌한 물체가 IDamageable 컴포넌트가 있다면
+                target.OnDamage(damage, hit.point, hit.normal); //OnDamage() 함수 호출해 상대방에게 Damage를 줌
 
-            hitPos = hit.point; //Ray가 충돌한 위치 저장
+            hitPos = hit.point; //Ray가 충돌한 지점 저장
         }
 
         else
         {
-            hitPos = firePos.position + firePos.forward * fireDistance; //Ray가 충돌하지 않았다면, 50만큼의 거리를 충돌 위치로 설정
+            hitPos = firePos.position + (firePos.forward * fireRange); //Ray가 충돌하지 않았다면, 최대거리(fireRange)를 충돌 위치로 설정
             //lineRenderer.SetPosition(1, ray.GetPoint(fireDistance));
         }
     }
@@ -87,7 +86,7 @@ public class Gun : MonoBehaviour
 
     public bool Reload()    //재장전 시도
     {
-        if (gunstate == State.RELOADING || remainAmmo <= 0 || curmagAmmo >= magCapacity)
+        if (gunstate == State.RELOADING || remainAmmo <= 0 || curMagAmmo >= magCapacity)
         {   //재장전 | 남은 탄약이 없음 | 탄창에 탄알이 가득 참
             return false;
         }
@@ -104,12 +103,12 @@ public class Gun : MonoBehaviour
         source.PlayOneShot(reloadClip);
         yield return new WaitForSeconds(reloadTime);
 
-        int ammoToFill = magCapacity - curmagAmmo;  //탄창에 채울 탄알 계산
+        int ammoToFill = magCapacity - curMagAmmo;  //탄창에 채울 탄알 계산
 
         if (remainAmmo < ammoToFill)    //탄창에 채워야 할 탄알이 남은 탄알보다 많다면 채워야 할 탄알수를 남은 탄알수에 맞추어서 줄임
             ammoToFill = remainAmmo;
 
-        curmagAmmo += ammoToFill;
+        curMagAmmo += ammoToFill;
         remainAmmo -= ammoToFill;
         gunstate = State.READY;
     }

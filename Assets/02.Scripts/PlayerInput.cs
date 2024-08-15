@@ -34,6 +34,7 @@ public class PlayerInput : MonoBehaviour
 
             return;
         }
+        
         move = Input.GetAxis(moveAxisName);
         rotate = Input.GetAxis(rotateAxisName);
         fire = Input.GetButton(fireButtonName);
