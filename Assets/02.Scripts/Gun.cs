@@ -57,7 +57,7 @@ public class Gun : MonoBehaviour
         if (Physics.Raycast(firePos.position, firePos.forward/*ray*/, out hit, fireRange))
         {
             IDamageable target = hit.collider.GetComponent<IDamageable>();  //Raycast가 충돌한 물체의 Collider에서 IDamageable 컴포넌트 찾음
-            
+
             if (target != null) //충돌한 물체가 IDamageable 컴포넌트가 있다면
                 target.OnDamage(damage, hit.point, hit.normal); //OnDamage() 함수 호출해 상대방에게 Damage를 줌
 
@@ -86,10 +86,9 @@ public class Gun : MonoBehaviour
 
     public bool Reload()    //재장전 시도
     {
-        if (gunstate == State.RELOADING || remainAmmo <= 0 || curMagAmmo >= magCapacity)
-        {   //재장전 | 남은 탄약이 없음 | 탄창에 탄알이 가득 참
+        if (gunstate == State.RELOADING || remainAmmo <= 0 || curMagAmmo >= magCapacity)    //재장전상태 | 남은 탄약이 없음 | 탄창에 탄약이 가득 참
             return false;
-        }
+
         else
         {
             StartCoroutine(ReloadRoutine());
@@ -103,13 +102,13 @@ public class Gun : MonoBehaviour
         source.PlayOneShot(reloadClip);
         yield return new WaitForSeconds(reloadTime);
 
-        int ammoToFill = magCapacity - curMagAmmo;  //탄창에 채울 탄알 계산
+        int fillAmmo = magCapacity/*25*/ - curMagAmmo;  //탄창에 채울 탄약 계산
 
-        if (remainAmmo < ammoToFill)    //탄창에 채워야 할 탄알이 남은 탄알보다 많다면 채워야 할 탄알수를 남은 탄알수에 맞추어서 줄임
-            ammoToFill = remainAmmo;
+        if (remainAmmo < fillAmmo)  //남아있는 탄약이 재장전 할 탄약 수보다 적으면 걍 그거로 채움
+            fillAmmo = remainAmmo;
 
-        curMagAmmo += ammoToFill;
-        remainAmmo -= ammoToFill;
+        curMagAmmo += fillAmmo;
+        remainAmmo -= fillAmmo;
         gunstate = State.READY;
     }
 }
