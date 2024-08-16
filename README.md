@@ -21,4 +21,11 @@
 6. LineRenderer 사용해 광선 그리기
 7. Raycast를 사용해 탄알 발사 구현
 
-8. playerShooter와 Gun분리해서 ParticleSystem 다르고 총기도 다르니까 스크립트 분리
+# 240816
+1. playerShooter와 Gun분리해서 ParticleSystem 다르고 총기도 다르니까 스크립트 분리
+2. 다형성
+3. Living Entity 기반 클래스
+- 적AI와 Player는 생명체
+- 체력을 가짐
+- 체력 회복 가능
+- 살거나 죽기 가능

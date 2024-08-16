@@ -57,7 +57,7 @@ public class Gun : MonoBehaviour
         RaycastHit hit; //레이캐스트가 충돌한 정보를 담고 있는 구조체 선언
         //Ray ray = new Ray(firePos.position, firePos.forward);
         Vector3 hitPos = Vector3.zero;
-        if (Physics.Raycast(firePos.position, firePos.forward/*ray*/, out hit, fireRange))
+        if (Physics.Raycast(firePos.position/*localPosition*/, firePos.forward/*ray*/, out hit, fireRange))
         {
             IDamageable target = hit.collider.GetComponent<IDamageable>();  //Raycast가 충돌한 물체의 Collider에서 IDamageable 컴포넌트 찾음
 
@@ -69,7 +69,7 @@ public class Gun : MonoBehaviour
 
         else
         {
-            hitPos = firePos.position + (firePos.forward * fireRange);      //Ray가 충돌하지 않았다면, 최대거리(fireRange)를 충돌 위치로 설정
+            hitPos = firePos.position/*localPosition*/ + (firePos.forward * fireRange);      //Ray가 충돌하지 않았다면, 최대거리(fireRange)를 충돌 위치로 설정
             //lineRenderer.SetPosition(1, ray.GetPoint(fireDistance));
         }
         StartCoroutine(ShotEffect(hitPos));
@@ -85,7 +85,7 @@ public class Gun : MonoBehaviour
         muzzleFlash.Play();
         shellEjectEffect.Play();
         source.PlayOneShot(shotClip);
-        lineRenderer.SetPosition(0, firePos.position);  //선의 시작점을 총구의 위치로 잡음
+        lineRenderer.SetPosition(0, firePos.position/*localPosition*/);  //선의 시작점을 총구의 위치로 잡음
         lineRenderer.SetPosition(1, hitPos);            //선의 끝점은 입력으로 들어온 충돌 위치로 설정
         yield return new WaitForSeconds(0.03f);
 

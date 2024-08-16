@@ -45,7 +45,7 @@ public class PlayerShooter : MonoBehaviour
 
     void UpdateUI()
     {
-
+        //if(c_gun != null && UIManager.u_instance!= null)
     }
 
     void OnAnimatorIK(int layerIndex)
@@ -53,11 +53,11 @@ public class PlayerShooter : MonoBehaviour
         gunPivot.position = ani.GetIKHintPosition(AvatarIKHint.RightElbow); //gunpivot을 3D모델의 오른쪽 팔꿈치 위치로 이동
 
         /*IK 사용해 왼손의 위치와 회전을 총의 왼쪽 손잡이에 맞춤*/
-        ani.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0f/*쓸거면 1.0*/);
-        ani.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0f);
+        ani.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1.0f/*안쓸거면 0*/);
+        ani.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1.0f);
         ani.SetIKPosition(AvatarIKGoal.LeftHand, leftHandMound.position);
         ani.SetIKRotation(AvatarIKGoal.LeftHand, leftHandMound.rotation);
-        
+
         /*IK 사용해 오른손의 위치와 회전을 총의 오른쪽 손잡이에 맞춤*/
         ani.SetIKPositionWeight(AvatarIKGoal.RightHand, 1.0f);
         ani.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);
