@@ -613,7 +613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f83db52281b7f0f438d2776807fbea51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun: {fileID: 1251432072}
+  c_gun: {fileID: 1251432072}
   gunPivot: {fileID: 1971655769}
   leftHandMound: {fileID: 1339716883}
   rightHandMound: {fileID: 74243092}
@@ -715,7 +715,7 @@ MonoBehaviour:
   damage: 25
   remainAmmo: 100
   magCapacity: 25
-  curmagAmmo: 0
+  curMagAmmo: 0
   timeBetweenShot: 0.1
   reloadTime: 1
 --- !u!198 &1268867744 stripped
