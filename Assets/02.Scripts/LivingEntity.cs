@@ -16,7 +16,7 @@ public class LivingEntity : MonoBehaviour, IDamageable
         HP = startHP;
     }
 
-    public void OnDamage(float damage, Vector3 hitPos, Vector3 hitNormal)
+    public virtual void OnDamage(float damage, Vector3 hitPos, Vector3 hitNormal)
     {
         HP -= damage;
 
@@ -24,11 +24,11 @@ public class LivingEntity : MonoBehaviour, IDamageable
             Die();
     }
 
-    public virtual void RestoreHP(float upHP)
+    public virtual void RestoreHP(float addHP)
     {
         if (isDead) return;
 
-        HP += upHP;
+        HP += addHP;
     }
 
     public virtual void Die()
