@@ -57,6 +57,7 @@ public class PlayerShooter : MonoBehaviour
         ani.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0f);
         ani.SetIKPosition(AvatarIKGoal.LeftHand, leftHandMound.position);
         ani.SetIKRotation(AvatarIKGoal.LeftHand, leftHandMound.rotation);
+        
         /*IK 사용해 오른손의 위치와 회전을 총의 오른쪽 손잡이에 맞춤*/
         ani.SetIKPositionWeight(AvatarIKGoal.RightHand, 1.0f);
         ani.SetIKRotationWeight(AvatarIKGoal.RightHand, 1.0f);

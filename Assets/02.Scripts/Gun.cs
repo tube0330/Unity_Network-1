@@ -12,8 +12,8 @@ public class Gun : MonoBehaviour
     public ParticleSystem shellEjectEffect; //탄피 효과
     LineRenderer lineRenderer;
     AudioSource source;
-    AudioClip shotClip;
-    AudioClip reloadClip;
+    public AudioClip shotClip;
+    public AudioClip reloadClip;
 
     public float damage = 25f;
     float fireRange = 50f;          //사정거리
@@ -44,8 +44,11 @@ public class Gun : MonoBehaviour
     {
         if (gunstate == State.READY && Time.time >= lastFireTime + timeBetweenShot)
         {
-            lastFireTime = Time.time;
-            Shot();
+            if (Input.GetMouseButtonDown(0))
+            {
+                lastFireTime = Time.time;
+                Shot();
+            }
         }
     }
 
@@ -58,17 +61,22 @@ public class Gun : MonoBehaviour
         {
             IDamageable target = hit.collider.GetComponent<IDamageable>();  //Raycast가 충돌한 물체의 Collider에서 IDamageable 컴포넌트 찾음
 
-            if (target != null) //충돌한 물체가 IDamageable 컴포넌트가 있다면
-                target.OnDamage(damage, hit.point, hit.normal); //OnDamage() 함수 호출해 상대방에게 Damage를 줌
+            if (target != null)                                             //충돌한 물체가 IDamageable 컴포넌트가 있다면
+                target.OnDamage(damage, hit.point, hit.normal);             //OnDamage() 함수 호출해 상대방에게 Damage를 줌
 
-            hitPos = hit.point; //Ray가 충돌한 지점 저장
+            hitPos = hit.point;                                             //Ray가 충돌한 지점 저장
         }
 
         else
         {
-            hitPos = firePos.position + (firePos.forward * fireRange); //Ray가 충돌하지 않았다면, 최대거리(fireRange)를 충돌 위치로 설정
+            hitPos = firePos.position + (firePos.forward * fireRange);      //Ray가 충돌하지 않았다면, 최대거리(fireRange)를 충돌 위치로 설정
             //lineRenderer.SetPosition(1, ray.GetPoint(fireDistance));
         }
+        StartCoroutine(ShotEffect(hitPos));
+        --curMagAmmo;
+
+        if (curMagAmmo <= 0)
+            gunstate = State.EMPTY;
     }
 
     IEnumerator ShotEffect(Vector3 hitPos)
