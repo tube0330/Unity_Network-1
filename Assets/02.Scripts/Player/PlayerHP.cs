@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class PlayerHP : LivingEntity
 {
@@ -34,6 +35,7 @@ public class PlayerHP : LivingEntity
         c_shooter.enabled = true;
     }
 
+    [PunRPC]
     public override void RestoreHP(float addHP)
     {
         base.RestoreHP(addHP);    //LivingEntity.RestoreHP()호출
@@ -41,6 +43,7 @@ public class PlayerHP : LivingEntity
         HPslider.value = HP;
     }
 
+    [PunRPC]
     public override void OnDamage(float damage, Vector3 hitPos, Vector3 hitDirection)
     {
         if (!isDead)
@@ -60,6 +63,20 @@ public class PlayerHP : LivingEntity
         ani.SetTrigger(hashDie);
         c_movement.enabled = false;
         c_shooter.enabled = false;
+
+        Invoke("Respawn", 5f);
+    }
+
+    public void Respawn()   //플레이어 사망 후 5초 후에 부활
+    {
+        if (photonView.IsMine)
+        {
+            Vector3 randomSpawnPos = Random.insideUnitSphere * 5f;  //원점에서 반경 5유닛 내부의 랜덤 위치 지정
+            randomSpawnPos.y = 0f;
+            transform.position = randomSpawnPos;
+        }
+        gameObject.SetActive(false);    //OnDisable() 호출하기위해
+        gameObject.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other) //아이템과 충돌한 경우 해당 아이템을 사용하도록 처리하는 함수
@@ -70,9 +87,14 @@ public class PlayerHP : LivingEntity
 
             if (item != null)
             {
-                item.Use(gameObject);
-                source.PlayOneShot(itemPickupClip, 1.0f);
+                /* 호스트만 아이템 사용 가능
+                 * 호스트에서 아이템 사용 후 사용된 효과를 모든 클라이언트에 동기화시킴
+                 */
+                 
+                if (PhotonNetwork.IsMasterClient)
+                    item.Use(gameObject);
             }
+            source.PlayOneShot(itemPickupClip, 1.0f);
         }
     }
 }

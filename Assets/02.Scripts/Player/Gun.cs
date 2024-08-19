@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Gun : MonoBehaviour
+public class Gun : MonoBehaviourPun, IPunObservable
 {
     public enum State { READY, EMPTY, RELOADING }
     public State gunstate { get; private set; }
@@ -52,6 +53,32 @@ public class Gun : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    void ShotProcessOnServer()
+    {
+        RaycastHit hit;
+        Vector3 hitPos = Vector3.zero;
+        if (Physics.Raycast(firePos.position, firePos.forward, out hit, fireRange))
+        {
+            IDamageable target = hit.collider.GetComponent<IDamageable>();
+            if (target != null)
+                target.OnDamage(damage, hit.point, hit.normal);
+
+            hitPos = hit.point;
+        }
+
+        else
+            hitPos = firePos.position + (firePos.forward * fireRange);
+
+        photonView.RPC("ShotEffectProcessingOnClient", RpcTarget.All, hitPos);
+    }
+
+    [PunRPC]
+    void ShotEffectProcessingOnClient(Vector3 hitPos)
+    {
+        StartCoroutine(ShotEffect(hitPos));
+    }
+
     void Shot() //실제 발사 처리
     {
         RaycastHit hit; //레이캐스트가 충돌한 정보를 담고 있는 구조체 선언
@@ -68,11 +95,12 @@ public class Gun : MonoBehaviour
         }
 
         else
-        {
             hitPos = firePos.position/*localPosition*/ + (firePos.forward * fireRange);      //Ray가 충돌하지 않았다면, 최대거리(fireRange)를 충돌 위치로 설정
-            //lineRenderer.SetPosition(1, ray.GetPoint(fireDistance));
-        }
+                                                                                             //lineRenderer.SetPosition(1, ray.GetPoint(fireDistance));
+
         StartCoroutine(ShotEffect(hitPos));
+        photonView.RPC("ShotProcessOnServer", RpcTarget.MasterClient);  //실제 발사 처리는 호스트가 다 하고 나머지 클라이언트는 총소리, 탄알깎이는 UI 이런거 함
+
         --curMagAmmo;
 
         if (curMagAmmo <= 0)
@@ -118,5 +146,29 @@ public class Gun : MonoBehaviour
         curMagAmmo += fillAmmo;
         remainAmmo -= fillAmmo;
         gunstate = State.READY;
+    }
+
+    [PunRPC]
+    public void AddAmmo(int addAmmo)
+    {
+        remainAmmo += addAmmo;
+    }
+
+    //주기적으로 자동 실행되는 동기화 함수
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)   //송신
+        {
+            stream.SendNext(remainAmmo);    //남은 탄약을 네트워크로 송신
+            stream.SendNext(curMagAmmo);    //현재 탄창에 있는 탄약을 네트워크로 송신
+            stream.SendNext(gunstate); //현재 총의 상태를 네트워크로 송신
+        }
+
+        else if (stream.IsReading)   //다른 네트워크 유저의 총의 모든 상태를 수신
+        {
+            remainAmmo = (int)stream.ReceiveNext();
+            curMagAmmo = (int)stream.ReceiveNext();
+            gunstate = (State)stream.ReceiveNext();
+        }
     }
 }

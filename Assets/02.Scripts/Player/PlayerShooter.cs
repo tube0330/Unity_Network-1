@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 /*IK: 왼손 오른손이 무기에 정확하게 부착되게 총알발사*/
 
-public class PlayerShooter : MonoBehaviour
+public class PlayerShooter : MonoBehaviourPun
 {
     public Gun c_gun;
     public Transform gunPivot;          //총 배치 기준점
@@ -29,6 +30,8 @@ public class PlayerShooter : MonoBehaviour
 
     void Update()
     {
+        if (!photonView.IsMine) return;
+
         if (c_playerInput.fire)
         {
             c_gun.Fire();
@@ -47,7 +50,6 @@ public class PlayerShooter : MonoBehaviour
     {
         if (c_gun != null && UIManager.u_Instance != null)
             UIManager.u_Instance.UpdateAmmoText(c_gun.curMagAmmo, c_gun.remainAmmo);
-
     }
 
     void OnAnimatorIK(int layerIndex)

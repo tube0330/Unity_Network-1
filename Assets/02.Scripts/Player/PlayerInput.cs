@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 /*입력과 움직임을 분리해 스크립트 생성*/
 
-public class PlayerInput : MonoBehaviour
+public class PlayerInput : MonoBehaviourPun
 {
     public string moveAxisName = "Vertical";        //W, S: 전진 후진
     public string rotateAxisName = "Horizontal";    //A, D: 회전
@@ -25,7 +26,9 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.G_instance != null && GameManager.G_instance.isGameOver)
+        if (!photonView.IsMine) return;
+
+        if (photonView.IsMine && GameManager.G_instance != null && GameManager.G_instance.isGameOver)
         {
             move = 0f;
             rotate = 0f;
@@ -34,7 +37,7 @@ public class PlayerInput : MonoBehaviour
 
             return;
         }
-        
+
         move = Input.GetAxis(moveAxisName);
         rotate = Input.GetAxis(rotateAxisName);
         fire = Input.GetButton(fireButtonName);
