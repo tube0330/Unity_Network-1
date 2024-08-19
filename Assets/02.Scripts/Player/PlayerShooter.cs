@@ -45,7 +45,9 @@ public class PlayerShooter : MonoBehaviour
 
     void UpdateUI()
     {
-        //if(c_gun != null && UIManager.u_instance!= null)
+        if (c_gun != null && UIManager.u_Instance != null)
+            UIManager.u_Instance.UpdateAmmoText(c_gun.curMagAmmo, c_gun.remainAmmo);
+
     }
 
     void OnAnimatorIK(int layerIndex)

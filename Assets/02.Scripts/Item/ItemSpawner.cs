@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class ItemSpawner : MonoBehaviour
+{
+    public GameObject[] itemPrefabs;    //생성할 Item. 2개만 할거(탄약 증가, HP 회복)
+    Transform playerTr;
+    string playerTag = "Player";
+    public float maxDist = 5f;  //플레이어 위치에서 아이템이 배치 될 최대 반경
+    public float minCooltime = 2f;
+    public float MaxCooltime = 7f;
+    float spawnCooltime;    //생성 쿨타임
+    float lastSpawnTime = 0f;    //마지막으로 아이템을 생성한 시간
+
+
+    void Start()
+    {
+        playerTr = GameObject.FindWithTag(playerTag).GetComponent<Transform>();
+        spawnCooltime = Random.Range(minCooltime, MaxCooltime); //2~7초 사이로 생성
+    }
+
+    void Update()
+    {
+        if (Time.time >= lastSpawnTime + spawnCooltime && playerTr != null)
+        {
+            lastSpawnTime = Time.time;
+            spawnCooltime = Random.Range(minCooltime, MaxCooltime);
+            Spawn();
+        }
+
+    }
+
+    void Spawn()
+    {
+        Vector3 spawnPos = GetRandomPointOnNavMesh(playerTr.position, maxDist);
+        spawnPos += Vector3.up * 0.5f; //아이템 위치를 Player보다 0.5f 올림
+        GameObject ramdomItem = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
+        GameObject createItem = Instantiate(ramdomItem, spawnPos, Quaternion.identity); //생성
+
+        Destroy(createItem, 5f);
+    }
+
+    /*Navmesh 위에서 Random한 위치를 반환하는 메서드
+     *center를 중심으로 거리 반경 안에서 랜덤한 위치를 찾음
+     */
+    Vector3 GetRandomPointOnNavMesh(Vector3 center, float distance)
+    {
+        Vector3 randomPos = Random.insideUnitSphere/*반지름이 1인 구의 내부에서 임의의 점을 반환*/ * distance + center;
+
+        NavMeshHit hit;
+        NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas); //randomPos에서 가장 가까운 NavMesh 상의 유효한 지점을 찾는 데 사용
+
+        return hit.position;
+    }
+}
