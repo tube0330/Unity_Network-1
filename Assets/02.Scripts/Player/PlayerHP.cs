@@ -76,6 +76,8 @@ public class PlayerHP : LivingEntity
             transform.position = randomSpawnPos;
         }
         gameObject.SetActive(false);    //OnDisable() 호출하기위해
+        //GameManager.G_instance.ReStartGame();
+        UIManager.u_Instance.RestartGame();
         gameObject.SetActive(true);
     }
 

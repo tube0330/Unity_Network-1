@@ -53,6 +53,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         UIManager.u_Instance.UpdateScoreText(score);
     }
 
+    /* public void ReStartGame()
+    {
+        isGameOver = false;
+        score = 0;
+        UIManager.u_Instance.SetActiveGameOverUI(isGameOver);
+        UIManager.u_Instance.UpdateScoreText(score);
+    } */
+
     public void EndGame()
     {
         isGameOver = true;

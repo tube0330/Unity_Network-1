@@ -9,15 +9,15 @@ public class EnemySpawner : MonoBehaviourPun, IPunObservable
     List<Enemy> enemies = new List<Enemy>();
     public Enemy enemyPrefab;
     public Transform[] spawnPoints;
-    public Color strongEnemySkinColor = Color.red;  //강한 적 AI가 가질 피부색
+    Color strongEnemySkinColor = Color.red;  //강한 적 AI가 가질 피부색
     int wave;
 
-    public float damageMax = 30f;   //최대 공격력
-    public float damageMin = 20f;   //최소 공격력
-    public float MaxHP = 200f;
-    public float MinHP = 100f;
-    public float MaxSpeed = 3.0f;
-    public float MinSpeed = 1.0f;
+    float damageMax = 30f;   //최대 공격력
+    float damageMin = 20f;   //최소 공격력
+    float MaxHP = 200f;
+    float MinHP = 100f;
+    float MaxSpeed = 3.0f;
+    float MinSpeed = 1.0f;
     int enemyCnt = 0;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -37,7 +37,7 @@ public class EnemySpawner : MonoBehaviourPun, IPunObservable
 
     void Awake()
     {
-        //PhotonPeer.RegisterType(typeof(Color))
+        PhotonPeer.RegisterType(typeof(Color), 128, ColorSerialization.SerializeColor, ColorSerialization.DeserializeColor);    //좀비 색상이 직렬화되었다가,,,,?
     }
 
     void Update()
@@ -47,9 +47,7 @@ public class EnemySpawner : MonoBehaviourPun, IPunObservable
             if (GameManager.G_instance != null && GameManager.G_instance.isGameOver) return;
 
             if (enemies.Count <= 0) //적을 다 없앴다면 다음 spawn 실행
-            {
                 SpawnWave();
-            }
 
             UpdateUI();
         }
