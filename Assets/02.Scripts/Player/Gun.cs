@@ -16,7 +16,7 @@ public class Gun : MonoBehaviourPun, IPunObservable
     public AudioClip shotClip;
     public AudioClip reloadClip;
 
-    public float damage = 25f;
+    float damage = 15f;
     float fireRange = 50f;          //사정거리
     public int remainAmmo = 100;    //남은 탄약
     public int magCapacity = 25;    //탄창 용량 25

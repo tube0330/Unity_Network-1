@@ -43,3 +43,8 @@
 - Player 근처의 Nav mesh 위에 랜덤한 점을 선택해 아이템 생성
 2. Photon
 3. 네트워크가 연결되면 Button의 Interactive 체크
+
+# 240820
+1. Update() 메서드를 호스트만 실행
+- if문을 추가해 클라이언트가 호스트가 아닌 경우 애니메이션을 실행하지 못하도록 처리.
+=> 호스트에서만 좀비 Animator parameter를 갱신해도 Photon Animator View 컴포넌트가 알아서 동기화해주지만 호스트가 아닌 클라이언트에서도 Update() 메서드가 실행되는 것을 방지하기 위해서.

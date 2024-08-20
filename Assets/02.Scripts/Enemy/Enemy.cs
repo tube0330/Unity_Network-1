@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using Photon.Pun;
 public class Enemy : LivingEntity   //player처럼 HP깎이고 죽고 회복할 수 있으니까 LivingEntity 상속
 {
     public LayerMask whatIsTarget;         //추적 대상 레이어
@@ -15,7 +15,7 @@ public class Enemy : LivingEntity   //player처럼 HP깎이고 죽고 회복할 
     Renderer e_renderer;
     Rigidbody rb;
     NavMeshAgent pathfinder;    //경로 계산 AI agent
-    
+
     public float damage = 20f;
     public float timeBetweenAttack = 0.5f;  //공격 쿨타임
     float lastAttackTime = 0f;
@@ -44,6 +44,7 @@ public class Enemy : LivingEntity   //player처럼 HP깎이고 죽고 회복할 
         rb = GetComponent<Rigidbody>();
     }
 
+    [PunRPC]
     public void SetUp(float setHP, float setDamage, float setSpeed, Color skinColor)
     {
         startHP = setHP;
@@ -55,12 +56,15 @@ public class Enemy : LivingEntity   //player처럼 HP깎이고 죽고 회복할 
 
     void Start()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         //StartCoroutine(UpdatePath());
         InvokeRepeating("UpdatePath", 0.01f, 0.25f);    //0.01f초 후에 UpdatePath 메서드를 0.25초 간격으로 반복 호출
     }
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         ani.SetBool(hashHasTarget, hasTarget);
     }
 
@@ -95,6 +99,7 @@ public class Enemy : LivingEntity   //player처럼 HP깎이고 죽고 회복할 
         }
     }
 
+    [PunRPC]
     public override void OnDamage(float damage, Vector3 hitPos, Vector3 hitNormal)
     {
         if (!isDead)
@@ -128,6 +133,8 @@ public class Enemy : LivingEntity   //player처럼 HP깎이고 죽고 회복할 
 
     void OnTriggerStay(Collider other)
     {
+        if(!PhotonNetwork.IsMasterClient) return;
+
         if (!isDead && Time.time >= lastAttackTime + timeBetweenAttack)
         {
             LivingEntity attackTarget = other.GetComponent<LivingEntity>();

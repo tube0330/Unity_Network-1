@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ItemSpawner : MonoBehaviour
+public class ItemSpawner : MonoBehaviourPun
 {
     public GameObject[] itemPrefabs;    //생성할 Item. 2개만 할거(탄약 증가, HP 회복)
     Transform playerTr;
@@ -23,6 +24,8 @@ public class ItemSpawner : MonoBehaviour
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;   //호스트만 아이템 직접 생성 가능
+
         if (Time.time >= lastSpawnTime + spawnCooltime && playerTr != null)
         {
             lastSpawnTime = Time.time;
@@ -37,9 +40,23 @@ public class ItemSpawner : MonoBehaviour
         Vector3 spawnPos = GetRandomPointOnNavMesh(playerTr.position, maxDist);
         spawnPos += Vector3.up * 0.5f; //아이템 위치를 Player보다 0.5f 올림
         GameObject ramdomItem = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
+
+        /* 자기자신만 생성되고 소멸
         GameObject createItem = Instantiate(ramdomItem, spawnPos, Quaternion.identity); //생성
 
-        Destroy(createItem, 5f);
+        //Destroy(createItem, 5f);
+        */
+
+        GameObject item = PhotonNetwork.Instantiate(ramdomItem.name, spawnPos, Quaternion.identity);    //네트워크상에서 모든 클라이언트에 해당 아이템 생성
+        StartCoroutine(DestroyAfter(item, 5f));
+    }
+
+    IEnumerator DestroyAfter(GameObject targetItem, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (targetItem != null)
+            PhotonNetwork.Destroy(targetItem);
     }
 
     /*Navmesh 위에서 Random한 위치를 반환하는 메서드
