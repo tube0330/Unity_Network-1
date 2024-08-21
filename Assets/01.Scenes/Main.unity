@@ -504,13 +504,6 @@ MonoBehaviour:
   - {fileID: 1488614698}
   - {fileID: 1488614697}
   - {fileID: 1488614696}
-  strongEnemySkinColor: {r: 1, g: 0, b: 0, a: 1}
-  damageMax: 10
-  damageMin: 2
-  MaxHP: 200
-  MinHP: 100
-  MaxSpeed: 3
-  MinSpeed: 1
 --- !u!114 &815341198
 MonoBehaviour:
   m_ObjectHideFlags: 0

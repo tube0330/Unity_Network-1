@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         else if (G_instance != this)
             Destroy(this.gameObject); */
 
+        if (g_instance == null)
+            g_instance = this;
+
         if (g_instance != null)
             Destroy(gameObject);
 
